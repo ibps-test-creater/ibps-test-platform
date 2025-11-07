@@ -1,6 +1,3 @@
-# Complete IBPS Test Platform - Server Integration Guide
-
-## Backend Server (server.js)
 
 ```javascript
 const express = require('express');
@@ -512,3 +509,4 @@ export const APIService = {
 // Make it available globally
 window.APIService = APIService;
 ```
+
