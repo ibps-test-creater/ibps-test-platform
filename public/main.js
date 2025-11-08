@@ -114,103 +114,77 @@ async function renderDashboard() {
   if (!dashboardEl) return;
 
   try {
-    // ✅ HIDE ALL OTHER VIEWS FIRST
-    const testMaker = document.getElementById('testMaker');
-    const testContainer = document.getElementById('testContainer');
-    const solutionView = document.getElementById('solutionView');
-    const resultsModal = document.getElementById('resultsModal');
-
-    if (testMaker) testMaker.style.display = 'none';
-    if (testContainer) testContainer.style.display = 'none';
-    if (solutionView) solutionView.style.display = 'none';
-    if (resultsModal) resultsModal.style.display = 'none';
-
-    // ✅ SHOW ONLY DASHBOARD
+    // Hide all other views
+    document.getElementById('testMaker').style.display = 'none';
+    document.getElementById('testContainer').style.display = 'none';
+    document.getElementById('solutionView').style.display = 'none';
+    document.getElementById('resultsModal').style.display = 'none';
     dashboardEl.style.display = 'block';
-    appState.currentView = 'dashboard';
 
+    // Load tests from backend API, or fallback to local sample data
     let tests = [];
-    
     if (window.StorageService) {
-      tests = await StorageService.getAllTests();
-      console.log('📚 Tests from backend:', tests.length);
-    }
-
-    if (!tests || tests.length === 0) {
-      if (typeof window.default !== 'undefined' && window.default.tests) {
-        tests = window.default.tests;
-        console.log('📚 Using sample tests:', tests.length);
-      } else {
-        console.warn('No tests available');
+      try {
+        tests = await StorageService.getAllTests();
+      } catch (err) {
+        console.warn("API offline, using sample data.");
         tests = [];
       }
     }
+    if (!tests || tests.length === 0) {
+      if (typeof window.default !== 'undefined' && window.default.tests) {
+        tests = window.default.tests;
+        console.log('Using sample tests:', tests.length);
+      }
+    }
 
+    // Render test columns
     const subjects = {
-      'Quantitative Aptitude': [],
-      'Reasoning Ability': [],
-      'English Language': []
+      "Quantitative Aptitude": [],
+      "Reasoning Ability": [],
+      "English Language": []
     };
-
     tests.forEach(test => {
-      const subject = test.subject || 'Quantitative Aptitude';
+      const subject = test.subject || "Quantitative Aptitude";
       if (!subjects[subject]) subjects[subject] = [];
       subjects[subject].push(test);
     });
-
     const columnMap = {
-      'Quantitative Aptitude': 'qaContent',
-      'Reasoning Ability': 'reasoningContent',
-      'English Language': 'englishContent'
+      "Quantitative Aptitude": "qaContent",
+      "Reasoning Ability": "reasoningContent",
+      "English Language": "englishContent"
     };
-
     Object.keys(columnMap).forEach(subject => {
-      const contentId = columnMap[subject];
-      const contentEl = document.getElementById(contentId);
+      const contentEl = document.getElementById(columnMap[subject]);
       if (!contentEl) return;
-
       contentEl.innerHTML = '';
-
       const subjectTests = subjects[subject] || [];
       subjectTests.forEach(test => {
-        const attemptStats = appState.attemptHistory[test.id] || {
-          attempts: 0,
-          best: 0,
-          last: 0
-        };
-
+        const attemptStats = appState.attemptHistory[test.id] || { attempts: 0, best: 0, last: 0 };
         const testCard = document.createElement('div');
         testCard.className = 'test-card';
         testCard.innerHTML = `
           <h3>${test.name}</h3>
-          <div class="test-meta">
-            <span>⏱️ ${test.duration} min</span>
-            <span>📝 ${test.questions ? test.questions.length : 0} Q</span>
-          </div>
-          ${attemptStats.attempts > 0 ? `
-            <div class="attempt-stats">
+          <div class="test-meta"><span>⏱️ ${test.duration} min</span>
+          <span>📝 ${test.questions ? test.questions.length : 0} Q</span></div>
+          ${attemptStats.attempts > 0 ? `<div class="attempt-stats">
               <small>Attempts: ${attemptStats.attempts}</small>
               <small>Best: ${attemptStats.best.toFixed(1)}%</small>
               <small>Last: ${attemptStats.last.toFixed(1)}%</small>
-            </div>
-          ` : ''}
+            </div>` : ""}
           <button class="take-test-btn" data-test-id="${test.id}">
             ${attemptStats.attempts > 0 ? 'Retake Test' : 'Take Test'}
           </button>
         `;
-
-        testCard.querySelector('.take-test-btn').addEventListener('click', () => {
-          startTest(test.id);
-        });
-
+        testCard.querySelector('.take-test-btn').addEventListener('click', () => startTest(test.id));
         contentEl.appendChild(testCard);
       });
     });
-
   } catch (error) {
     console.error('Error rendering dashboard:', error);
   }
 }
+
 
 // ==================== TEST MAKER ====================
 function showTestMaker(subject) {
@@ -327,21 +301,19 @@ async function saveTest() {
 
     const questionElements = document.querySelectorAll('.question-item');
     const questions = [];
-
     questionElements.forEach((el, index) => {
       const options = [];
       for (let i = 0; i < 5; i++) {
         const optInput = document.getElementById(`question-${index}-opt-${i}`);
         options.push(optInput ? optInput.value : '');
       }
-
       questions.push({
         id: index + 1,
         instructions: document.getElementById(`question-${index}-instructions`)?.value || '',
         instructionImage: '',
         questionEn: document.getElementById(`question-${index}-en`)?.value || '',
         questionHi: document.getElementById(`question-${index}-hi`)?.value || '',
-        options: options,
+        options,
         correctAnswer: parseInt(document.getElementById(`question-${index}-correct`)?.value || 0),
         solution: document.getElementById(`question-${index}-solution`)?.value || '',
         solutionImage: ''
@@ -361,14 +333,12 @@ async function saveTest() {
       questions: questions
     };
 
-    console.log('📡 Saving test:', testData.id);
-    
     if (window.StorageService) {
       const result = await StorageService.saveTest(testData);
       if (result) {
         alert('✅ Test saved successfully!');
         cancelTestMaker();
-        renderDashboard();
+        await renderDashboard();
       } else {
         alert('❌ Error saving test');
       }
@@ -926,6 +896,7 @@ function applyFontSize() {
 
 // ==================== END OF MAIN.JS ==================== 
 console.log('✅ main.js loaded successfully');
+
 
 
 
