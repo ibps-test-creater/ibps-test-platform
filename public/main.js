@@ -114,11 +114,20 @@ async function renderDashboard() {
   if (!dashboardEl) return;
 
   try {
-    document.getElementById('testMaker').style.display = 'none';
-    document.getElementById('testContainer').style.display = 'none';
-    document.getElementById('solutionView').style.display = 'none';
-    document.getElementById('resultsModal').style.display = 'none';
+    // ✅ HIDE ALL OTHER VIEWS FIRST
+    const testMaker = document.getElementById('testMaker');
+    const testContainer = document.getElementById('testContainer');
+    const solutionView = document.getElementById('solutionView');
+    const resultsModal = document.getElementById('resultsModal');
+
+    if (testMaker) testMaker.style.display = 'none';
+    if (testContainer) testContainer.style.display = 'none';
+    if (solutionView) solutionView.style.display = 'none';
+    if (resultsModal) resultsModal.style.display = 'none';
+
+    // ✅ SHOW ONLY DASHBOARD
     dashboardEl.style.display = 'block';
+    appState.currentView = 'dashboard';
 
     let tests = [];
     
@@ -128,8 +137,8 @@ async function renderDashboard() {
     }
 
     if (!tests || tests.length === 0) {
-      if (typeof default !== 'undefined' && default.tests) {
-        tests = default.tests;
+      if (typeof window.default !== 'undefined' && window.default.tests) {
+        tests = window.default.tests;
         console.log('📚 Using sample tests:', tests.length);
       } else {
         console.warn('No tests available');
@@ -684,10 +693,13 @@ function formatTime(ms) {
 // ==================== RESULTS & SOLUTIONS ====================
 
 function showResults(attemptData) {
+  // ✅ HIDE TEST CONTAINER, SHOW RESULTS MODAL
   const testContainerEl = document.getElementById('testContainer');
   const resultsModalEl = document.getElementById('resultsModal');
+  const dashboardEl = document.getElementById('dashboard');
   
   if (testContainerEl) testContainerEl.style.display = 'none';
+  if (dashboardEl) dashboardEl.style.display = 'none';
   if (resultsModalEl) resultsModalEl.style.display = 'flex';
 
   const scoreEl = document.getElementById('scoreValue');
@@ -728,15 +740,28 @@ function showResults(attemptData) {
   }
 }
 
-function goHome() {
-  document.getElementById('resultsModal').style.display = 'none';
-  document.getElementById('solutionView').style.display = 'none';
-  document.getElementById('testContainer').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
 
+function goHome() {
+  // ✅ HIDE ALL OTHER VIEWS
+  const resultsModal = document.getElementById('resultsModal');
+  const solutionView = document.getElementById('solutionView');
+  const testContainer = document.getElementById('testContainer');
+  const dashboard = document.getElementById('dashboard');
+
+  if (resultsModal) resultsModal.style.display = 'none';
+  if (solutionView) solutionView.style.display = 'none';
+  if (testContainer) testContainer.style.display = 'none';
+
+  // ✅ SHOW DASHBOARD
+  if (dashboard) dashboard.style.display = 'block';
+
+  appState.currentTest = null;
+  appState.currentAttemptId = null;
   appState.currentView = 'dashboard';
+
   renderDashboard();
 }
+
 
 function retakeTest() {
   if (!appState.currentTest) return;
@@ -752,14 +777,16 @@ function viewSolutions() {
     return;
   }
 
+  // ✅ HIDE RESULTS, SHOW SOLUTION VIEW
   const resultsModalEl = document.getElementById('resultsModal');
   const solutionViewEl = document.getElementById('solutionView');
-  
+
   if (resultsModalEl) resultsModalEl.style.display = 'none';
   if (solutionViewEl) solutionViewEl.style.display = 'flex';
 
   renderSolution(appState.currentQuestionIndex || 0);
 }
+
 
 function renderSolution(index) {
   if (!appState.currentTest) return;
@@ -899,5 +926,6 @@ function applyFontSize() {
 
 // ==================== END OF MAIN.JS ==================== 
 console.log('✅ main.js loaded successfully');
+
 
 
