@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBPS Exam Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <h1>IBPS Practice Tests</h1>
+        <div class="dashboard-columns">
+            <!-- Quantitative Aptitude Column -->
+            <div class="subject-column" id="qaColumn">
+                <div class="column-header">Quantitative Aptitude</div>
+                <div class="column-content" id="qaContent"></div>
+                <button class="create-column-test-btn" data-subject="Quantitative Aptitude">
+                    + Create New QA Test
+                </button>
+            </div>
+
+            <!-- Reasoning Ability Column -->
+            <div class="subject-column" id="reasoningColumn">
+                <div class="column-header">Reasoning Ability</div>
+                <div class="column-content" id="reasoningContent"></div>
+                <button class="create-column-test-btn" data-subject="Reasoning Ability">
+                    + Create New Reasoning Test
+                </button>
+            </div>
+
+            <!-- English Language Column -->
+            <div class="subject-column" id="englishColumn">
+                <div class="column-header">English Language</div>
+                <div class="column-content" id="englishContent"></div>
+                <button class="create-column-test-btn" data-subject="English Language">
+                    + Create New English Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Maker -->
+    <div id="testMaker" style="display: none;">
+        <div class="test-maker-container">
+            <div class="test-maker-header">
+                <h1>Create New Test</h1>
+                <button class="btn-close" id="closeMakerBtn">×</button>
+            </div>
+
+            <div class="test-maker-content">
+                <!-- Test Details -->
+                <div class="section-card">
+                    <h3>Test Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Test ID</label>
+                            <input type="text" id="testId" class="form-control" placeholder="e.g., qa-test-1">
+                        </div>
+                        <div class="form-group">
+                            <label>Test Name</label>
+                            <input type="text" id="testName" class="form-control" placeholder="e.g., Quantitative Aptitude - Test 1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" id="testSubject" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (minutes)</label>
+                            <input type="number" id="testDuration" class="form-control" placeholder="30" value="30">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Section -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3>Questions</h3>
+                        <button class="btn-add-question" id="addQuestionBtn">+ Add Question</button>
+                    </div>
+                    <div id="questionsContainer"></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="maker-actions">
+                    <button class="btn-action btn-cancel" id="cancelMakerBtn">Cancel</button>
+                    <button class="btn-action btn-save" id="saveTestBtn">Save Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Container -->
+    <div id="testContainer" style="display: none;">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="test-title" id="testTitle">Test Title</div>
+            <div class="timer-display">
+                <span class="timer-label">Time Left</span>
+                <span class="timer-value" id="timerValue">30:00</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Instructions -->
+            <div class="left-panel">
+                <div class="panel-header">Instructions</div>
+                <div class="instructions-content">
+                    <div id="instructionsText"></div>
+                </div>
+            </div>
+
+            <!-- Center Panel: Question -->
+            <div class="center-panel">
+                <div class="question-header">
+                    <div class="question-number">Qus No. <span id="currentQuestionNum">1</span></div>
+                    <div class="font-controls">
+                        <button class="font-btn" id="fontDecreaseBtn">A−</button>
+                        <button class="font-btn" id="fontIncreaseBtn">A+</button>
+                    </div>
+                </div>
+
+                <div class="question-content" id="questionContent">
+                    <div class="question-text">
+                        <div class="question-en" id="questionEn"></div>
+                        <div class="question-hi" id="questionHi"></div>
+                    </div>
+
+                    <div class="options-container" id="optionsContainer"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-action btn-review" id="markReviewBtn">Mark For Review & Next</button>
+                    <button class="btn-action btn-clear" id="clearResponseBtn">Clear Response</button>
+                    <button class="btn-action btn-save" id="saveNextBtn">Save & Next</button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Palette -->
+            <div class="right-panel">
+                <div class="panel-header">Question Palette</div>
+                <div class="palette-content">
+                    <div class="status-legend">
+                        <div class="legend-item">
+                            <span class="legend-box answered"></span>
+                            <span class="legend-text">Answered: <span id="answeredCount">0</span></span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-box not-answered"></span>
+                            <span class="legend-text">Not Answered: <span id="notAnsweredCount">0</span></span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-box not-visited"></span>
+                            <span class="legend-text">Not Visited: <span id="notVisitedCount">10</span></span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-box marked-review"></span>
+                            <span class="legend-text">Marked for Review: <span id="markedReviewCount">0</span></span>
+                        </div>
+                    </div>
+
+                    <div class="palette-grid" id="paletteGrid"></div>
+
+                    <div class="palette-actions">
+                        <button class="btn-palette btn-pause" id="pauseTestBtn">Pause Test</button>
+                        <button class="btn-palette btn-submit" id="submitBtn">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal" id="resultsModal">
+        <div class="modal-content results-modal">
+            <div class="modal-header"><h2>Test Results</h2></div>
+            <div class="modal-body">
+                <div class="score-display">
+                    <div class="score-value" id="scoreValue">0/10</div>
+                    <div class="score-percentage" id="scorePercentage">0%</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Total Questions</div>
+                        <div class="stat-value" id="statTotal">10</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Correct</div>
+                        <div class="stat-value stat-correct" id="statCorrect">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Wrong</div>
+                        <div class="stat-value stat-wrong" id="statWrong">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Not Attempted</div>
+                        <div class="stat-value" id="statSkipped">10</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Total Time</div>
+                        <div class="stat-value" id="statTime">00:00</div>
+                    </div>
+                </div>
+
+                <div class="results-table-container">
+                    <h3>Question-wise Breakdown</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Q.No</th>
+                                <th>Your Answer</th>
+                                <th>Correct Answer</th>
+                                <th>Status</th>
+                                <th>Time Taken</th>
+                                <th>Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="results-actions">
+                    <button class="btn-view-solutions" id="viewSolutionsBtn">View Solutions</button>
+                    <button class="btn-retake" id="retakeBtn">Retake Test</button>
+                    <button class="btn-home" id="goHomeBtn">Go to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Solution View -->
+    <div id="solutionView" style="display: none;">
+        <div class="solution-view-container">
+            <!-- Left Panel: Instructions -->
+            <div class="solution-left-panel">
+                <div class="panel-header">Instructions</div>
+                <div class="solution-content">
+                    <div id="solutionInstructionsText"></div>
+                </div>
+            </div>
+
+            <!-- Center Panel: Question & Solution -->
+            <div class="solution-center-panel">
+                <div class="solution-header">
+                    <div class="solution-title">Question <span id="solutionQuestionNum">1</span></div>
+                    <div class="solution-nav-buttons">
+                        <button class="btn-nav" id="solutionPrevBtn">Previous</button>
+                        <button class="btn-nav" id="solutionNextBtn">Next</button>
+                        <button class="btn-home-solution" id="solutionHomeBtn">Go to Home Page</button>
+                    </div>
+                </div>
+
+                <div class="solution-content">
+                    <div class="solution-question-text">
+                        <div class="solution-question-en" id="solutionQuestionEn"></div>
+                        <div class="solution-question-hi" id="solutionQuestionHi"></div>
+                    </div>
+
+                    <div class="solution-options" id="solutionOptionsContainer"></div>
+
+                    <div class="solution-section" id="solutionSection">
+                        <h4>Solution</h4>
+                        <div class="solution-text" id="solutionText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Palette -->
+            <div class="solution-right-panel">
+                <div class="panel-header">Question Palette</div>
+                <div class="palette-content">
+                    <div class="palette-grid" id="solutionPaletteGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="tests-data.js"></script>
+    <script src="storage-service.js"></script>
+    <script src="app.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
