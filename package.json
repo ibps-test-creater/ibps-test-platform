@@ -1,12 +1,17 @@
 {
-  "name": "ibps-test-platform",
+  "name": "ibps-test-platform-root",
   "version": "1.0.0",
-  "description": "Professional IBPS-style online test platform with MongoDB backend",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "cd server && npm start",
+    "dev": "cd server && npm run dev",
+    "install-all": "npm install && cd server && npm install"
   },
+  "engines": {
+    "node": "18.x"
+  }
+}
+,
   "keywords": [
     "ibps",
     "test",
@@ -30,3 +35,4 @@
     "node": "18.x"
   }
 }
+
