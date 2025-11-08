@@ -1031,3 +1031,53 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ==================== INITIAL VISIBILITY STATES ==================== */
+
+/* Dashboard - VISIBLE by default */
+#dashboard {
+  display: block !important;
+}
+
+/* Test Maker - HIDDEN by default */
+#testMaker {
+  display: none !important;
+}
+
+/* Test Container - HIDDEN by default */
+#testContainer {
+  display: none !important;
+}
+
+/* Solution View - HIDDEN by default */
+#solutionView {
+  display: none !important;
+}
+
+/* Results Modal - HIDDEN by default */
+#resultsModal {
+  display: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  overflow-y: auto;
+}
+
+/* When shown, use flex */
+#resultsModal.show {
+  display: flex !important;
+}
+
+#testContainer.show {
+  display: flex !important;
+}
+
+#solutionView.show {
+  display: flex !important;
+}
