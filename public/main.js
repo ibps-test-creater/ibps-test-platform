@@ -729,18 +729,12 @@ function showResults(attemptData) {
 }
 
 function goHome() {
-  const resultsModalEl = document.getElementById('resultsModal');
-  const solutionViewEl = document.getElementById('solutionView');
-  const dashboardEl = document.getElementById('dashboard');
-  
-  if (resultsModalEl) resultsModalEl.style.display = 'none';
-  if (solutionViewEl) solutionViewEl.style.display = 'none';
-  if (dashboardEl) dashboardEl.style.display = 'block';
-  
-  appState.currentTest = null;
-  appState.currentAttemptId = null;
+  document.getElementById('resultsModal').style.display = 'none';
+  document.getElementById('solutionView').style.display = 'none';
+  document.getElementById('testContainer').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
   appState.currentView = 'dashboard';
-  
   renderDashboard();
 }
 
@@ -905,4 +899,5 @@ function applyFontSize() {
 
 // ==================== END OF MAIN.JS ==================== 
 console.log('✅ main.js loaded successfully');
+
 
