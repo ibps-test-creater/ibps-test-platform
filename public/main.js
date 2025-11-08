@@ -1,4 +1,4 @@
-/ ✅ CORRECTED main.js - Updated to work with backend API
+// ✅ CORRECTED main.js - Updated to work with backend API
 // This version connects to your Node.js + MongoDB backend
 
 /**
@@ -635,3 +635,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Make functions available globally
 window.startTest = startTest;
+
