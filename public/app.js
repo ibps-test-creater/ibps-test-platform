@@ -116,4 +116,7 @@ const sampleQuestions = [
 ];
 
 // Export for use in main.js
+window.sampleQuestions = sampleQuestions;
+console.log('✅ Sample questions loaded');
+
 
